@@ -57,23 +57,19 @@ class BurgerBuilder extends Component{
     }
 
     placeOrder = () => {
-        this.setState({loading:true,purchasing:false});
-        const post = {
-            ingredients : this.state.ingredients,
-            price : this.state.totalPrice,
-            customer : {
-                name:'RRR',
-                mob:'7585856565',
-                city : 'PU',
-                zipCode : '52555'
-            },
-            deliveryMethod:'normal',
-            paymentMethod : 'cash'
-        }
 
-        axios.post('/orders.json',post)
-        .then(response =>   this.setState({loading:false,purchasing:false}))
-        .catch(error => this.setState({loading:false,purchasing:false}))
+        let queryParans = [];
+        for(let i in this.state.ingredients){
+            queryParans.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
+        }
+        queryParans.push('price=' + this.state.totalPrice);
+        const queryString = queryParans.join('&');
+
+        this.props.history.push({
+            pathname : '/checkout',
+            search :'?' + queryString
+        });
+
     }
 
     addIngredients= (type) => {
@@ -110,7 +106,7 @@ class BurgerBuilder extends Component{
 
         updateIngredients[type] = updatedCount;
 
-        //CALCULATE PRICE OF BURGER
+        //CALCULATE PRICE OF THE BURGER
         const oldPrice = this.state.totalPrice;
         const newPrice = oldPrice - INGREDIENT_PRICE[type];
 
@@ -159,7 +155,6 @@ class BurgerBuilder extends Component{
             </Aux>
         )
     }
-
-}   
+}
 
 export default withErrorHandler( BurgerBuilder, axios );
