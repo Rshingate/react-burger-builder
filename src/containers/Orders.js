@@ -9,25 +9,33 @@ export default class Orders extends Component {
         orders:null
     }
 
-    componentDidMount(){
-        axios.get("/orders.json")
-        .then((response) => {
-            this.setState({orders:response.data})
-        })
-        .catch((error) => {
+    loadData = () => {
+    
+        setTimeout(() => { 
+            axios.get("/orders.json")
+            .then((response) => {
+                this.setState({orders:response.data})
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+         }, 3000);
+    }
 
-        })
+    componentDidMount(){
+        this.loadData();
     }
 
 
     render() {
         let orderData = <Spinner/>;
         if(this.state.orders){
-            orderData = Object.entries(this.state.orders).map((order) => {
+             orderData = Object.entries(this.state.orders).map((order) => {
                 return <Order key={order[0]} ingredients={order[1].ingredients}
                 price={order[1].price}
                 orderId={order[0]}
                 delivery={order[1].customer}
+                orderpaid = {order[1].paymentMethod}
                 />
             });
         }
