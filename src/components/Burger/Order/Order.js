@@ -16,8 +16,10 @@ export default function Order(props) {
             </h4>
             <h5>1 Burger with following:</h5>
             <h5>Items :  {ingredientSummary}</h5>
-            <p>Delivery Address : {props.delivery.city},{props.delivery.zipCode}</p>
+            <h6>Name and Contact : {props.delivery.name} - {props.delivery.mob} </h6>
+            <p>Delivery Address : {props.delivery.address1},{props.delivery.address2},{props.delivery.city},{props.delivery.state},{props.delivery.zipCode}</p>
             <p>Total Price: <strong>{parseInt(props.price).toFixed(2)}</strong></p>
+            <p>Paid By: <strong>{props.orderpaid}</strong></p>
         </div>
     )
 }
