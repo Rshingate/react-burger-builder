@@ -2,8 +2,14 @@ import React, { Component } from 'react'
 import axios from '../../axios-orders';
 //import Button from '../../components/UI/Button/Button';
 import {Form,Col,Button} from 'react-bootstrap';
+import SimpleReactValidator from 'simple-react-validator';
 
 export default class DeliveryDetails extends Component {
+
+    constructor(props) {
+        super(props);
+        this.validator = new SimpleReactValidator();
+    }
 
     state = {
         customer : {
@@ -20,45 +26,57 @@ export default class DeliveryDetails extends Component {
 
     handleChange = (event)  => {
 
-        const customerData = {
-            ...this.state.customer,
-        }
-
-        customerData[event.target.name] = event.target.value;
-
-        this.setState({
-            customer:customerData
-        });
+            const customerData = {
+                ...this.state.customer,
+            }
+    
+            customerData[event.target.name] = event.target.value;
+    
+            this.setState({
+                customer:customerData
+            });
     }
 
 
     placeOrder = () => {
+
         this.setState({loading:true});
-        const post = {
-            ingredients : this.props.ingredients,
-            price : this.props.price,
-            customer : {
-                name:this.state.customer.name,
-                mob:this.state.customer.mob,
-                address1 : this.state.customer.address1,
-                address2 : this.state.customer.address2,
-                city : this.state.customer.city,
-                state:this.state.customer.state,
-                zipCode : this.state.customer.zipCode
-            },
-            deliveryMethod:'normal',
-            paymentMethod : 'cash'
+
+        if (this.validator.allValid()) {
+
+            const post = {
+                ingredients : this.props.ingredients,
+                price : this.props.price,
+                customer : {
+                    name:this.state.customer.name,
+                    mob:this.state.customer.mob,
+                    address1 : this.state.customer.address1,
+                    address2 : this.state.customer.address2,
+                    city : this.state.customer.city,
+                    state:this.state.customer.state,
+                    zipCode : this.state.customer.zipCode
+                },
+                deliveryMethod:'normal',
+                paymentMethod : 'cash'
+            }
+    
+            axios.post('/orders.json',post)
+            .then(response =>   this.setState({loading:false}))
+            .catch(error => this.setState({loading:false}))
+
+            this.props.history.push('/orders');
+            
+        } else {
+            this.validator.showMessages();
+            // rerender to show messages for the first time
+            // you can use the autoForceUpdate option to do this automatically`
+            this.forceUpdate();
         }
 
-        axios.post('/orders.json',post)
-        .then(response =>   this.setState({loading:false}))
-        .catch(error => this.setState({loading:false}))
-
-
-        this.props.history.push('/orders');
     }
 
     render() {
+
         return (
             <div style={{margin:'20px auto',width:"80%",padding:"10px"}}>
                 <h3>Enter Delivery Details</h3>
@@ -68,27 +86,32 @@ export default class DeliveryDetails extends Component {
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Name</Form.Label>
                             <Form.Control type="text" name="name" value={this.state.customer.name} placeholder="Enter Name" onChange={(event) => this.handleChange(event)}/>
+                            {this.validator.message('name', this.state.customer.name, 'required')}
                         </Form.Group>
                         <Form.Group as={Col} controlId="formGridMob">
                             <Form.Label>Mobile</Form.Label>
                             <Form.Control type="text" name="mob" value={this.state.customer.mob} placeholder="Enter Mobile" onChange={(event) => this.handleChange(event)} />
+                            {this.validator.message('mob', this.state.customer.mob, 'required')}
                         </Form.Group>
                     </Form.Row>
 
                     <Form.Group controlId="formGridAddress1">
                         <Form.Label>Address</Form.Label>
                         <Form.Control  name="address1" value={this.state.customer.address1} placeholder="1234 Main St" onChange={(event) => this.handleChange(event)}/>
+                        {this.validator.message('address1', this.state.customer.address1, 'required')}
                     </Form.Group>
 
                     <Form.Group controlId="formGridAddress2">
                         <Form.Label>Address 2</Form.Label>
                         <Form.Control name="address2"  value={this.state.customer.address2} placeholder="Apartment, studio, or floor" onChange={(event) => this.handleChange(event)}/>
+                        {this.validator.message('address2', this.state.customer.address2, 'required')}
                     </Form.Group>
 
                     <Form.Row>
                         <Form.Group as={Col} controlId="formGridCity">
                         <Form.Label>City</Form.Label>
                         <Form.Control name="city" value={this.state.customer.city} onChange={(event) => this.handleChange(event)}/>
+                        {this.validator.message('city', this.state.customer.city, 'required')}
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="formGridState">
@@ -97,11 +120,13 @@ export default class DeliveryDetails extends Component {
                             <option>Choose...</option>
                             <option value="MH">MH</option>
                         </Form.Control>
+                        {this.validator.message('state', this.state.customer.state, 'required')}
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="formGridZip">
                         <Form.Label>Zip</Form.Label>
                         <Form.Control  name="zipCode" value={this.state.customer.zipCode} onChange={(event) => this.handleChange(event)}/>
+                        {this.validator.message('zipCode', this.state.customer.zipCode, 'required')}
                         </Form.Group>
                     </Form.Row>
 

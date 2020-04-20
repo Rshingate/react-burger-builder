@@ -9,8 +9,7 @@ export default class Orders extends Component {
         orders:null
     }
 
-    loadData = () => {
-    
+    componentDidMount(){
         setTimeout(() => { 
             axios.get("/orders.json")
             .then((response) => {
@@ -20,10 +19,6 @@ export default class Orders extends Component {
                 console.log(error);
             })
          }, 3000);
-    }
-
-    componentDidMount(){
-        this.loadData();
     }
 
 
