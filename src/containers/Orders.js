@@ -18,7 +18,7 @@ export default class Orders extends Component {
             .catch((error) => {
                 console.log(error);
             })
-         }, 3000);
+         }, 1000);
     }
 
 

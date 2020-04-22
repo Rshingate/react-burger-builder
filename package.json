@@ -57,7 +57,7 @@
     "resolve-url-loader": "3.1.1",
     "sass-loader": "8.0.2",
     "semver": "6.3.0",
-    "simple-react-validator": "^1.4.5",
+    "simple-react-validator": "file:simple-react-validator",
     "style-loader": "0.23.1",
     "terser-webpack-plugin": "2.3.4",
     "ts-pnp": "1.1.5",
